@@ -3,7 +3,8 @@ from collections import Counter
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import euclidean_distances
 from matplotlib import colors
-
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 class House(object):
     
