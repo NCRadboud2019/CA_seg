@@ -13,8 +13,6 @@ class House(object):
         self.npeople = npeople
         self.status = status
         
-
-
 class Grid(object):
     
     def __init__(self, N, p):
@@ -23,10 +21,10 @@ class Grid(object):
         self.p = p
         
     def __call__(self, rounds):
-        while rounds > 0:
+        for i in range(rounds):
+            self.plot_matrix(i, self.getGrid())
             self.timeStep(self.N, self.p)
-            #self.plot_matrix(rounds, self.getGrid())
-            rounds=-1
+            
         
     def getGrid(self):
         return self.grid
@@ -70,6 +68,7 @@ class Grid(object):
         '''        
         Leave = True
         Stay = False
+        If 30% of the neighbors is other state, leave to closest vacant house
         '''
         if(neighborhood.get(1) != None):
             if neighborhood.get(1)>=0.3*len(neighbors) and state == 2:
@@ -103,22 +102,22 @@ class Grid(object):
             self.leave(i,j)
             
     def plot_matrix(self, rounds, rm):
-        cmap = colors.ListedColormap(['b','r','g'])
-
+        cmap = colors.ListedColormap(['white','gray','black'])
+       
         plt.title(rounds)
         plt.imshow(rm, interpolation='nearest', cmap=cmap)
         plt.tight_layout()
         plt.draw()
+        plt.show()
+        # plt.savefig(str(rounds) + ".png", dpi = 300)
         plt.pause(0.05)
-    
-       
-
-grid = Grid(15, 0.2)
+        
+grid = Grid(100, 0.2)
 print("before")
 before = grid.getGrid()
 print(before)
 print("after")
-grid(10)
+grid(100)
 after = grid.getGrid()
 print(after)
 
