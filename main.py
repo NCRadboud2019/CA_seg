@@ -15,6 +15,7 @@ class House(object):
         
 class Grid(object):
     
+    
     def __init__(self, N, p):
         self.grid = np.random.randint(0,3,(N,N))
         self.N = N
@@ -42,6 +43,9 @@ class Grid(object):
         return empty
                     
     def getNeighbors(self, i, j):
+        '''        
+        Use the Moore neighbourhood to find the neighbours of a cell and store the class of each neighbour
+        '''
         neighbors = []        
         neighbour = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
         
@@ -54,6 +58,9 @@ class Grid(object):
         return neighbors
     
     def timeStep(self, N, p):
+        '''        
+        For each cell, there is a chance p that this cell get's updated.
+        '''
         for i in np.random.permutation(np.arange(N)):
             for j in np.random.permutation(np.arange(N)):
                 if(np.random.randint(1,1/p + 1)==1) and self.grid[i][j] != 0:
@@ -82,15 +89,17 @@ class Grid(object):
             return False
             
     def closestEmptyHouse(self, emptyHouses, i, j):
-        # should be closest empty house he is content
+
         return emptyHouses[np.argmin(euclidean_distances(emptyHouses, (i,j)))]
 
         
     def leave(self, i, j):
-        
+        '''        
+        Cell at place i,j leaves his house and goes to the closest avaiblable house.
+        '''
         emptyHouses = self.getEmptyHouses()
        
-        newHouseI, newHouseJ = self.closestEmptyHouse(emptyHouses, i, j) # replace by an eval func
+        newHouseI, newHouseJ = self.closestEmptyHouse(emptyHouses, i, j)
         self.changeGrid(newHouseI, newHouseJ, self.grid[i][j])
         self.changeGrid(i,j,0)
         
@@ -102,6 +111,9 @@ class Grid(object):
             self.leave(i,j)
             
     def plot_matrix(self, rounds, rm):
+        '''        
+        Plots the current state of the grid
+        '''
         cmap = colors.ListedColormap(['white','gray','black'])
        
         plt.title(rounds)
