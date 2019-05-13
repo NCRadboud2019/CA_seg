@@ -14,26 +14,39 @@ class House(object):
         self.status = status
         
 class Grid(object):
-    
-    
+      
     def __init__(self, N, p):
+        """
+        N grid size (NxN)
+        p chance that a family wants to move
+        """
         self.grid = np.random.randint(0,3,(N,N))
         self.N = N
         self.p = p
         
-    def __call__(self, rounds):
-        for i in range(rounds):
-            self.plot_matrix(i, self.getGrid())
-            self.timeStep(self.N, self.p)
-            
+    def __call__(self, rounds, Print = True):
+        
+        if Print:        
+            for i in range(rounds):
+                self.plot_matrix(i, self.getGrid())
+                self.timeStep(self.N, self.p)
+        else:
+            for i in range(rounds):
+                self.timeStep(self.N, self.p)
+        self.plot_matrix(i, self.getGrid())    
         
     def getGrid(self):
         return self.grid
         
     def changeGrid(self, i, j, value):
         self.grid[i][j] = value
-        
+    
+  
     def getEmptyHouses(self):
+        """
+        Returns the coordinates of all empty houses in the grid
+        """
+    
         empty = []                
         for i in range(self.N):
             for j in range(self.N):
@@ -71,51 +84,88 @@ class Grid(object):
         return Counter(neighbors)
         
         
-    def evaluateNeighborhood(self, neighborhood, neighbors, state):
+    def evaluateNeighborhoodLeaving(self, neighborhood, neighbors, state):
         '''        
+        Used to check if the family should leave the house
         Leave = True
         Stay = False
-        If 30% of the neighbors is other state, leave to closest vacant house
+        If 35% of the neighbors is other state, leave
         '''
         if(neighborhood.get(1) != None):
-            if neighborhood.get(1)>=0.3*len(neighbors) and state == 2:
-                
+           if neighborhood.get(1)>0.35*len(neighbors) and state == 2:  
                 return True
                 
         elif(neighborhood.get(2) != None):
-            if neighborhood.get(2)>=0.3*len(neighbors) and state == 1:
+            if neighborhood.get(2)>0.35*len(neighbors) and state == 1:
                 return True
         else:
             return False
             
+    def evaluateNeighborhoodSearching(self, neighborhood, neighbors, state):
+         '''    
+         Used to check if the house is a good fit
+         MoveIn = True
+         StayAway = False
+         If 25% of the neighbors is other don't move here
+         '''
+         if(neighborhood.get(1) != None):
+             if neighborhood.get(1)<=0.25*len(neighbors) and state == 1:
+                 
+                 return True
+                 
+         elif(neighborhood.get(2) != None):
+             if neighborhood.get(2)<=0.25*len(neighbors) and state == 2:
+                 return True
+         else:
+             return False        
+         
+         
     def closestEmptyHouse(self, emptyHouses, i, j):
 
         return emptyHouses[np.argmin(euclidean_distances(emptyHouses, (i,j)))]
 
+    
+    def sortByEuclidean(self, emptyHouses,i,j):
+        distances = euclidean_distances(emptyHouses,(i,j))
         
+        return [x for _,x in sorted(zip(distances, emptyHouses))]
+        
+    
     def leave(self, i, j):
         '''        
-        Cell at place i,j leaves his house and goes to the closest avaiblable house.
+        Cell at place i,j leaves his house and goes to the closest avaiblable house that he likes.
         '''
         emptyHouses = self.getEmptyHouses()
-       
-        newHouseI, newHouseJ = self.closestEmptyHouse(emptyHouses, i, j)
-        self.changeGrid(newHouseI, newHouseJ, self.grid[i][j])
-        self.changeGrid(i,j,0)
-        
+        emptySorted = self.sortByEuclidean(emptyHouses,i,j)       
+
+        for q in range(len(emptySorted)-1):
+            newI, newJ = emptySorted[q]
+         
+            neighbors = self.getNeighbors(newI, newJ)
+            neighborhood = self.getNeighborhood(neighbors) 
             
+            if (self.evaluateNeighborhoodSearching(neighborhood,neighbors,self.grid[i][j])):
+                self.changeGrid(newI, newJ, self.grid[i][j])
+                self.changeGrid(i,j,0)
+                break
+            
+         
     def update(self, i, j):
+        """
+        neighbors = i,j places of the neighbors
+        neighborhood = classes of neighbors
+        """ 
         neighbors = self.getNeighbors(i, j)
         neighborhood = self.getNeighborhood(neighbors) 
-        if self.evaluateNeighborhood(neighborhood, neighbors, self.grid[i][j]):
+        if self.evaluateNeighborhoodLeaving(neighborhood, neighbors, self.grid[i][j]):
             self.leave(i,j)
-            
+             
     def plot_matrix(self, rounds, rm):
         '''        
         Plots the current state of the grid
         '''
-        cmap = colors.ListedColormap(['white','gray','black'])
-       
+        #cmap = colors.ListedColormap(['white','gray','black'])
+        cmap = colors.ListedColormap(['white', 'blue', 'red'])
         plt.title(rounds)
         plt.imshow(rm, interpolation='nearest', cmap=cmap)
         plt.tight_layout()
@@ -124,12 +174,14 @@ class Grid(object):
         # plt.savefig(str(rounds) + ".png", dpi = 300)
         plt.pause(0.05)
         
-grid = Grid(100, 0.2)
-print("before")
+        
+        
+grid = Grid(25, 0.2)
+#print("before")
 before = grid.getGrid()
-print(before)
-print("after")
-grid(100)
+#print(before)
+#print("after")
+grid(100,False)
 after = grid.getGrid()
-print(after)
+#print(after)
 
