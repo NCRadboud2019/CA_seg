@@ -6,12 +6,42 @@ from matplotlib import colors
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
+
+"ALL NUMBERS HAVE TO BE MULTIPLIED BY 100"
+
+class Family(object):
+    
+    def __init__(self, income, npeople):
+        self.income = income
+        self.npeople = npeople
+        
+    def getIncome(self):
+        return self.income
+        
 class House(object):
     
-    def __init__(self, value, npeople, status):
+    def __init__(self, value, family):
         self.value = value
-        self.npeople = npeople
-        self.status = status
+        self.family = family
+        
+    def __str__(self):
+        "to string function of the House class"
+        return str(self.value)
+    
+    def isEmpty(self):
+        if(self.family is None):
+            return True
+        else:
+            return False
+        
+    def incomeOfHousehold(self):
+        return self.family.getIncome()
+        
+    def setFamily(self, fam):
+        self.family = fam
+        
+    def getFam(self):
+        return self.family
         
 class Grid(object):
       
@@ -20,7 +50,7 @@ class Grid(object):
         N grid size (NxN)
         p chance that a family wants to move
         """
-        self.grid = np.random.randint(0,3,(N,N))
+        self.grid = self.fillGrid(N)
         self.N = N
         self.p = p
         
@@ -33,7 +63,22 @@ class Grid(object):
         else:
             for i in range(rounds):
                 self.timeStep(self.N, self.p)
-        self.plot_matrix(i, self.getGrid())    
+        #self.plot_matrix(i, self.getGrid())    
+        
+    def fillGrid(self, N):
+        "Fill the grid with Households for now only 3 different households exists for test purposes"
+        gridint = np.random.randint(0,3,(N,N))
+        grid = np.empty((N,N),dtype=object)
+        for i in range(N):
+            for j in range(N):
+                if gridint[i][j] == 1:
+                    grid[i][j] = House(200,Family(20,1))
+                elif gridint[i][j] == 2:
+                    grid[i][j] = House(500,Family(100,1))
+                else:
+                    grid[i][j] = House(250, None)
+        return grid
+        
         
     def getGrid(self):
         return self.grid
@@ -50,7 +95,7 @@ class Grid(object):
         empty = []                
         for i in range(self.N):
             for j in range(self.N):
-                if(self.grid[i][j] == 0):
+                if(self.grid[i][j].isEmpty()):
                     empty.append((i, j))
                     
         return empty
@@ -76,14 +121,25 @@ class Grid(object):
         '''
         for i in np.random.permutation(np.arange(N)):
             for j in np.random.permutation(np.arange(N)):
-                if(np.random.randint(1,1/p + 1)==1) and self.grid[i][j] != 0:
+                if(np.random.randint(1,1/p + 1)==1) and not self.grid[i][j].isEmpty():
                     self.update(i, j)
                     
 
     def getNeighborhood(self, neighbors):
         return Counter(neighbors)
         
-        
+    def averageIncomeNeighborhood(self, neighbors):
+        "Calculate the averageincome of the neighborhood"
+        n = 0
+        total = 0
+        for i in range(len(neighbors)-1):
+            if not neighbors[i].isEmpty():
+                n += 1
+                total += neighbors[i].value
+        if n == 0:
+            return total
+        return total/n
+    """   
     def evaluateNeighborhoodLeaving(self, neighborhood, neighbors, state):
         '''        
         Used to check if the family should leave the house
@@ -100,7 +156,15 @@ class Grid(object):
                 return True
         else:
             return False
-            
+    """
+
+    def evaluateNeighborhoodLeaving(self, neighborhoodIncome, house):
+        if(neighborhoodIncome > 1.2*house.incomeOfHousehold() or neighborhoodIncome < 0.8*house.incomeOfHousehold() ):
+            return True
+        else:
+            return False
+
+    """    
     def evaluateNeighborhoodSearching(self, neighborhood, neighbors, state):
          '''    
          Used to check if the house is a good fit
@@ -118,7 +182,13 @@ class Grid(object):
                  return True
          else:
              return False        
-         
+             """
+    def evaluateNeighborhoodSearching(self, neighborhoodIncome, house):
+        if(neighborhoodIncome > 1.25*house.incomeOfHousehold() or neighborhoodIncome < 0.75*house.incomeOfHousehold() ):
+            return False
+        else:
+            return True
+
          
     def closestEmptyHouse(self, emptyHouses, i, j):
 
@@ -133,7 +203,7 @@ class Grid(object):
     
     def leave(self, i, j):
         '''        
-        Cell at place i,j leaves his house and goes to the closest avaiblable house that he likes.
+        Family at place i,j leaves his house and goes to the closest avaiblable house that he likes.
         '''
         emptyHouses = self.getEmptyHouses()
         emptySorted = self.sortByEuclidean(emptyHouses,i,j)       
@@ -142,24 +212,28 @@ class Grid(object):
             newI, newJ = emptySorted[q]
          
             neighbors = self.getNeighbors(newI, newJ)
-            neighborhood = self.getNeighborhood(neighbors) 
+            neighborhoodIncome = self.averageIncomeNeighborhood(neighbors) 
             
-            if (self.evaluateNeighborhoodSearching(neighborhood,neighbors,self.grid[i][j])):
-                self.changeGrid(newI, newJ, self.grid[i][j])
-                self.changeGrid(i,j,0)
+            if (self.evaluateNeighborhoodSearching(neighborhoodIncome,self.grid[i][j])):
+                self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
+                self.grid[i][j].setFamily(None)
+                
                 break
             
          
     def update(self, i, j):
         """
         neighbors = i,j places of the neighbors
-        neighborhood = classes of neighbors
+        neighborhoodIncome = average income of neighbors
         """ 
         neighbors = self.getNeighbors(i, j)
-        neighborhood = self.getNeighborhood(neighbors) 
-        if self.evaluateNeighborhoodLeaving(neighborhood, neighbors, self.grid[i][j]):
+        neighborhoodIncome = self.averageIncomeNeighborhood(neighbors) 
+        #if self.evaluateNeighborhoodLeaving(neighborhood, neighbors, self.grid[i][j]):
+        #    self.leave(i,j)
+        if self.evaluateNeighborhoodLeaving(neighborhoodIncome, self.grid[i][j]):
             self.leave(i,j)
-             
+         
+         
     def plot_matrix(self, rounds, rm):
         '''        
         Plots the current state of the grid
@@ -177,11 +251,13 @@ class Grid(object):
         
         
 grid = Grid(25, 0.2)
+print(grid.grid[0][0])
 #print("before")
-before = grid.getGrid()
+#before = grid.getGrid()
 #print(before)
 #print("after")
-grid(100,False)
-after = grid.getGrid()
+grid(1,False)
+print(grid.grid[12][12])
+#after = grid.getGrid()
 #print(after)
 
