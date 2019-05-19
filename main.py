@@ -7,22 +7,35 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 
-"ALL NUMBERS HAVE TO BE MULTIPLIED BY 100"
+"ALL NUMBERS HAVE TO BE MULTIPLIED BY 100 to get it to 'real'numbers"
+
+NUMBERSOFTRYS = 5  #Number of times before a family moves even if there is no house that they like
 
 class Family(object):
     
     def __init__(self, income, npeople):
         self.income = income
         self.npeople = npeople
+        self.nrTries = 0
         
     def getIncome(self):
         return self.income
+    
+    def getTries(self):
+        return self.nrTries
+    
+    def addATry(self):
+        self.nrTries += 1
+        
+    def resetTries(self):
+        self.nrTries = 0
         
 class House(object):
     
     def __init__(self, value, family):
         self.value = value
         self.family = family
+        
         
     def __str__(self):
         "to string function of the House class"
@@ -39,9 +52,12 @@ class House(object):
         
     def setFamily(self, fam):
         self.family = fam
+        self.family.resetTries()
         
     def getFam(self):
         return self.family
+    
+
         
 class Grid(object):
       
@@ -207,7 +223,9 @@ class Grid(object):
         '''
         emptyHouses = self.getEmptyHouses()
         emptySorted = self.sortByEuclidean(emptyHouses,i,j)       
-
+        
+        moved = 0
+        
         for q in range(len(emptySorted)-1):
             newI, newJ = emptySorted[q]
          
@@ -217,8 +235,15 @@ class Grid(object):
             if (self.evaluateNeighborhoodSearching(neighborhoodIncome,self.grid[i][j])):
                 self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
                 self.grid[i][j].setFamily(None)
-                
+                moved = 1
                 break
+            
+        if moved == 0 and self.grid[i][j].getFam().getTries() == 5:
+            newI, newJ = emptySorted[len(emptySorted)-1]   #Maybe house furthest away from own house? so len(emptysortd - 1) or just closest?
+            self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
+            self.grid[i][j].setFamily(None)
+            
+            
             
          
     def update(self, i, j):
