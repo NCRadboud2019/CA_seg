@@ -243,7 +243,8 @@ class Grid(object):
             self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
             self.grid[i][j].setFamily(None)
             
-            
+        else:
+            self.grid[i][j].getFam().addATry()
             
          
     def update(self, i, j):
