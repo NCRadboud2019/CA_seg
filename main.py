@@ -52,7 +52,8 @@ class House(object):
         
     def setFamily(self, fam):
         self.family = fam
-        self.family.resetTries()
+        if not(fam is None):
+            self.family.resetTries()
         
     def getFam(self):
         return self.family
@@ -277,12 +278,12 @@ class Grid(object):
         
         
 grid = Grid(25, 0.2)
-print(grid.grid[0][0])
+print(grid.grid[12][12])
 #print("before")
 #before = grid.getGrid()
 #print(before)
 #print("after")
-grid(1,False)
+grid(10,False)
 print(grid.grid[12][12])
 #after = grid.getGrid()
 #print(after)
