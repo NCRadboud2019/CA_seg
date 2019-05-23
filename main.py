@@ -35,8 +35,7 @@ class House(object):
     def __init__(self, value, family):
         self.value = value
         self.family = family
-        
-        
+               
     def __str__(self):
         "to string function of the House class"
         return str(self.value)
@@ -48,7 +47,10 @@ class House(object):
             return False
         
     def incomeOfHousehold(self):
-        return self.family.getIncome()
+        if self.family is None:
+            return 0
+        else:
+            return self.family.getIncome()
         
     def setFamily(self, fam):
         self.family = fam
@@ -75,12 +77,12 @@ class Grid(object):
         
         if Print:        
             for i in range(rounds):
-                self.plot_matrix(i, self.getGrid())
+                self.plot_matrix(i, "income")
                 self.timeStep(self.N, self.p)
         else:
             for i in range(rounds):
                 self.timeStep(self.N, self.p)
-        #self.plot_matrix(i, self.getGrid())    
+        self.plot_matrix(i, "income")    
         
     def fillGrid(self, N):
         "Fill the grid with Households for now only 3 different households exists for test purposes"
@@ -261,14 +263,23 @@ class Grid(object):
             self.leave(i,j)
          
          
-    def plot_matrix(self, rounds, rm):
+    def plot_matrix(self, rounds, attribute):
         '''        
         Plots the current state of the grid
         '''
         #cmap = colors.ListedColormap(['white','gray','black'])
-        cmap = colors.ListedColormap(['white', 'blue', 'red'])
-        plt.title(rounds)
-        plt.imshow(rm, interpolation='nearest', cmap=cmap)
+        
+        attributeGrid = np.zeros((self.N, self.N))
+        # moet mooier
+        if(attribute.lower() == "income"):
+            for i in range(self.N):
+                for j in range(self.N):
+                    attributeGrid[i][j] = self.grid[i][j].incomeOfHousehold()
+                        
+        
+        # cmap = colors.ListedColormap(['white', 'blue', 'red'])
+        plt.title(attribute +" at round: " + str(rounds))
+        plt.imshow(attributeGrid, interpolation='nearest')
         plt.tight_layout()
         plt.draw()
         plt.show()
@@ -283,7 +294,7 @@ print(grid.grid[12][12])
 #before = grid.getGrid()
 #print(before)
 #print("after")
-grid(10,False)
+grid(10,True)
 print(grid.grid[12][12])
 #after = grid.getGrid()
 #print(after)
