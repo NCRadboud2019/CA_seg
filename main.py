@@ -6,7 +6,6 @@ from matplotlib import colors
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
-
 "ALL NUMBERS HAVE TO BE MULTIPLIED BY 100 to get it to 'real'numbers"
 
 NUMBERSOFTRYS = 5  #Number of times before a family moves even if there is no house that they like
@@ -75,18 +74,22 @@ class Grid(object):
         
     def __call__(self, rounds, Print = True, Homogenity = True):
         
+        hScore = np.empty(rounds)
         if Print:        
             for i in range(rounds):
                 self.plot_matrix(i, "income")
-                print(self.calculateHomogenityScore())
+                hScore[i] = self.calculateHomogenityScore()
+                #print(hScore[i])
                 self.timeStep(self.N, self.p)
                 
         else:
             for i in range(rounds):
-                print(self.calculateHomogenityScore())
+                hScore[i] = self.calculateHomogenityScore()
+                #print(hScore[i])
                 self.timeStep(self.N, self.p)
-                
+            
         self.plot_matrix(i, "income")    
+        plt.plot(np.arange(rounds),hScore)
         
     def fillGrid(self, N):
         "Fill the grid with Households for now only 3 different households exists for test purposes"
@@ -158,7 +161,7 @@ class Grid(object):
         for i in range(len(neighbors)-1):
             if not neighbors[i].isEmpty():
                 n += 1
-                total += neighbors[i].value
+                total += neighbors[i].getIncomeOfHousehold()
         if n == 0:
             return total
         return total/n
@@ -197,25 +200,25 @@ class Grid(object):
         emptySorted = self.sortByEuclidean(emptyHouses,i,j)       
         
         moved = 0
-        
+    
         for q in range(len(emptySorted)-1):
             newI, newJ = emptySorted[q]
          
             neighbors = self.getNeighbors(newI, newJ)
             neighborhoodIncome = self.averageIncomeNeighborhood(neighbors) 
-            
+
             if (self.evaluateNeighborhoodSearching(neighborhoodIncome,self.grid[i][j])):
                 self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
                 self.grid[i][j].setFamily(None)
                 moved = 1
                 break
             
-        if moved == 0 and self.grid[i][j].getFam().getTries() == 5:
+        if (moved == 0 and self.grid[i][j].getFam().getTries() == 5):
             newI, newJ = emptySorted[len(emptySorted)-1]   #Maybe house furthest away from own house? so len(emptysortd - 1) or just closest?
             self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
             self.grid[i][j].setFamily(None)
             
-        else:
+        elif (moved == 0):
             self.grid[i][j].getFam().addATry()
             
          
@@ -272,14 +275,7 @@ class Grid(object):
         
         
         
-grid = Grid(25, 0.4)
-#print(grid.grid[12][12])
-#print("before")
-#before = grid.getGrid()
-#print(before)
-#print("after")
-grid(25,True, True)
-#print(grid.grid[12][12])
-#after = grid.getGrid()
-#print(after)
+grid = Grid(25, 0.2)
+grid(20,True, True)
+
 
