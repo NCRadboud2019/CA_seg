@@ -175,7 +175,7 @@ class Grid(object):
     """
 
     def evaluateNeighborhoodLeaving(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.2*house.incomeOfHousehold() or neighborhoodIncome < 0.8*house.incomeOfHousehold() ):
+        if(neighborhoodIncome > 1.25*house.incomeOfHousehold() or neighborhoodIncome < 0.75*house.incomeOfHousehold() ):
             return True
         else:
             return False
@@ -200,7 +200,7 @@ class Grid(object):
              return False        
              """
     def evaluateNeighborhoodSearching(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.25*house.incomeOfHousehold() or neighborhoodIncome < 0.75*house.incomeOfHousehold() ):
+        if(neighborhoodIncome > 1.2*house.incomeOfHousehold() or neighborhoodIncome < 0.8*house.incomeOfHousehold() ):
             return False
         else:
             return True
