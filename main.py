@@ -46,7 +46,7 @@ class House(object):
         else:
             return False
         
-    def incomeOfHousehold(self):
+    def getIncomeOfHousehold(self):
         if self.family is None:
             return 0
         else:
@@ -158,52 +158,17 @@ class Grid(object):
         if n == 0:
             return total
         return total/n
-    """   
-    def evaluateNeighborhoodLeaving(self, neighborhood, neighbors, state):
-        '''        
-        Used to check if the family should leave the house
-        Leave = True
-        Stay = False
-        If 35% of the neighbors is other state, leave
-        '''
-        if(neighborhood.get(1) != None):
-           if neighborhood.get(1)>0.35*len(neighbors) and state == 2:  
-                return True
-                
-        elif(neighborhood.get(2) != None):
-            if neighborhood.get(2)>0.35*len(neighbors) and state == 1:
-                return True
-        else:
-            return False
-    """
+
 
     def evaluateNeighborhoodLeaving(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.25*house.incomeOfHousehold() or neighborhoodIncome < 0.75*house.incomeOfHousehold() ):
+        if(neighborhoodIncome > 1.25*house.getIncomeOfHousehold() or neighborhoodIncome < 0.75*house.getIncomeOfHousehold() ):
             return True
         else:
             return False
 
-    """    
-    def evaluateNeighborhoodSearching(self, neighborhood, neighbors, state):
-         '''    
-         Used to check if the house is a good fit
-         MoveIn = True
-         StayAway = False
-         If 25% of the neighbors is other don't move here
-         '''
-         if(neighborhood.get(1) != None):
-             if neighborhood.get(1)<=0.25*len(neighbors) and state == 1:
-                 
-                 return True
-                 
-         elif(neighborhood.get(2) != None):
-             if neighborhood.get(2)<=0.25*len(neighbors) and state == 2:
-                 return True
-         else:
-             return False        
-             """
+
     def evaluateNeighborhoodSearching(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.2*house.incomeOfHousehold() or neighborhoodIncome < 0.8*house.incomeOfHousehold() ):
+        if(neighborhoodIncome > 1.2*house.getIncomeOfHousehold() or neighborhoodIncome < 0.8*house.getIncomeOfHousehold() ):
             return False
         else:
             return True
@@ -262,7 +227,21 @@ class Grid(object):
         if self.evaluateNeighborhoodLeaving(neighborhoodIncome, self.grid[i][j]):
             self.leave(i,j)
          
-         
+    
+    def homogenityScore(self):
+        """
+        Calculates the homogenity score based on income of a family.
+        SUM(states_j) SUM(Neighbors_i) 1/((|incomeState_j-incomeNeighor_i|)+1)
+        Not normalized between 0 and 1 yet
+        """
+        totalScore = 0
+        for i in range(self.N):
+            for j in range(self.N):
+                for neighbor in self.getNeighbors(i,j): 
+                    totalScore += 1/(np.abs(self.grid[i][j].incomeOfHousehold()-neighbor.incomeOfHousehold())+1)
+        return totalScore
+        
+     
     def plot_matrix(self, rounds, attribute):
         '''        
         Plots the current state of the grid
@@ -274,7 +253,7 @@ class Grid(object):
         if(attribute.lower() == "income"):
             for i in range(self.N):
                 for j in range(self.N):
-                    attributeGrid[i][j] = self.grid[i][j].incomeOfHousehold()
+                    attributeGrid[i][j] = self.grid[i][j].getIncomeOfHousehold()
                         
         
         # cmap = colors.ListedColormap(['white', 'blue', 'red'])
