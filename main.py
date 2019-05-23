@@ -73,15 +73,19 @@ class Grid(object):
         self.N = N
         self.p = p
         
-    def __call__(self, rounds, Print = True):
+    def __call__(self, rounds, Print = True, Homogenity = True):
         
         if Print:        
             for i in range(rounds):
                 self.plot_matrix(i, "income")
+                print(self.calculateHomogenityScore())
                 self.timeStep(self.N, self.p)
+                
         else:
             for i in range(rounds):
+                print(self.calculateHomogenityScore())
                 self.timeStep(self.N, self.p)
+                
         self.plot_matrix(i, "income")    
         
     def fillGrid(self, N):
@@ -228,7 +232,7 @@ class Grid(object):
             self.leave(i,j)
          
     
-    def homogenityScore(self):
+    def calculateHomogenityScore(self):
         """
         Calculates the homogenity score based on income of a family.
         SUM(states_j) SUM(Neighbors_i) 1/((|incomeState_j-incomeNeighor_i|)+1)
@@ -238,7 +242,7 @@ class Grid(object):
         for i in range(self.N):
             for j in range(self.N):
                 for neighbor in self.getNeighbors(i,j): 
-                    totalScore += 1/(np.abs(self.grid[i][j].incomeOfHousehold()-neighbor.incomeOfHousehold())+1)
+                    totalScore += 1/(np.abs(self.grid[i][j].getIncomeOfHousehold()-neighbor.getIncomeOfHousehold())+1)
         return totalScore
         
      
@@ -257,6 +261,7 @@ class Grid(object):
                         
         
         # cmap = colors.ListedColormap(['white', 'blue', 'red'])
+        plt.legend()
         plt.title(attribute +" at round: " + str(rounds))
         plt.imshow(attributeGrid, interpolation='nearest')
         plt.tight_layout()
@@ -267,14 +272,14 @@ class Grid(object):
         
         
         
-grid = Grid(25, 0.2)
-print(grid.grid[12][12])
+grid = Grid(25, 0.4)
+#print(grid.grid[12][12])
 #print("before")
 #before = grid.getGrid()
 #print(before)
 #print("after")
-grid(10,True)
-print(grid.grid[12][12])
+grid(25,True, True)
+#print(grid.grid[12][12])
 #after = grid.getGrid()
 #print(after)
 
