@@ -29,6 +29,10 @@ class Family(object):
     def resetTries(self):
         self.nrTries = 0
         
+    def setIncome(self,income):
+        self.income = income
+        
+        
 class House(object):
     
     def __init__(self, value, family):
@@ -79,17 +83,17 @@ class Grid(object):
             for i in range(rounds):
                 self.plot_matrix(i, "income")
                 hScore[i] = self.calculateHomogenityScore()
-                #print(hScore[i])
+                print(hScore[i])
                 self.timeStep(self.N, self.p)
                 
         else:
             for i in range(rounds):
                 hScore[i] = self.calculateHomogenityScore()
-                #print(hScore[i])
+                print(hScore[i])
                 self.timeStep(self.N, self.p)
             
         self.plot_matrix(i, "income")    
-        plt.plot(np.arange(rounds),hScore)
+        #plt.plot(np.arange(rounds),hScore)
         
     def fillGrid(self, N):
         "Fill the grid with Households for now only 3 different households exists for test purposes"
@@ -272,10 +276,20 @@ class Grid(object):
         plt.show()
         # plt.savefig(str(rounds) + ".png", dpi = 300)
         plt.pause(0.05)
-        
+    
+    def peopleLoseJob(self, p):
+        for i in range(self.N):
+            for j in range(self.N):
+                if(np.random.randint(1,1/p + 1)==1) and not self.grid[i][j].isEmpty():
+                    self.grid[i][j].getFam().setIncome(self.grid[i][j].getFam().getIncome()*0.5)
+                    
+                    
+                
         
         
 grid = Grid(25, 0.2)
-grid(20,True, True)
+grid(25,True, True)
+grid.peopleLoseJob(0.3)
+grid(25,True,True)
 
 
