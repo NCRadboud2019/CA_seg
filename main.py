@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import euclidean_distances
 from matplotlib import colors
 import warnings
+import ShannonIndex as ShannonIndex
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 "ALL NUMBERS HAVE TO BE MULTIPLIED BY 100 to get it to 'real'numbers"
