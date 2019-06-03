@@ -20,10 +20,7 @@ def ShannonIndex(neighborhood):
         pi = statusDict[state]/total
         entropy =+ pi * np.log2(pi)   
     return -entropy
-        
-print(ShannonIndex([1,2,3,1,4,3,5,5]))
-print(ShannonIndex([2,2,2,2]))
-print(ShannonIndex([1,2,3,1,4,3,5]))
+
         
         
         

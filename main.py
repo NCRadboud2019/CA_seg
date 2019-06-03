@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import euclidean_distances
 from matplotlib import colors
 import warnings
-import ShannonIndex as ShannonIndex
+from ShannonIndex import ShannonIndex
 import math
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
@@ -90,7 +90,7 @@ class Grid(object):
         else:
             for i in range(rounds):
                 hScore[i] = self.calculateHomogenityScore()
-                print(hScore[i])
+                print("Round {}: {}".format(i,hScore[i]))
                 self.timeStep(self.N, self.p)
             
         self.plot_matrix(i, "income")    
@@ -162,8 +162,8 @@ class Grid(object):
                     self.update(i, j)
                     
 
-    def getNeighborhood(self, neighbors):
-        return Counter(neighbors)
+    #def getNeighborhood(self, neighbors):
+    #    return Counter(neighbors)
         
     def averageIncomeNeighborhood(self, neighbors):
         "Calculate the averageincome of the neighborhood"
@@ -286,11 +286,28 @@ class Grid(object):
         # plt.savefig(str(rounds) + ".png", dpi = 300)
         plt.pause(0.05)
     
-                   
+               
+    def createHeatMap(self):
+        heatMap = []
+        for i in range(self.N):
+            for j in range(self.N):
+                neighbors = self.getNeighbors(i,j)
+                neighborhood = []
+                for neighbor in neighbors:
+                    neighborhood.append(neighbor.getStatusOfHousehold())
                     
-        
-grid = Grid(25, 0.4)
-grid(25,True, True)
-grid(25,True,True)
+                             
+                heatMap.append(ShannonIndex(neighborhood))
+                
+                
+        plt.imshow(np.asarray(heatMap).resize(self.N, self.N))
+        plt.show()
+    
+                    
+    
+grid = Grid(20, 0.4)
+grid(2,False, True) #14057.533333333662
+grid.createHeatMap()
+#grid(25,False,True)
 
 
