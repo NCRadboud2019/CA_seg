@@ -5,6 +5,7 @@ from sklearn.metrics.pairwise import euclidean_distances
 from matplotlib import colors
 import warnings
 import ShannonIndex as ShannonIndex
+import math
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 "ALL NUMBERS HAVE TO BE MULTIPLIED BY 100 to get it to 'real'numbers"
@@ -81,7 +82,7 @@ class Grid(object):
         hScore = np.empty(rounds)
         if Print:        
             for i in range(rounds):
-                self.plot_matrix(i, "income")
+                self.plot_matrix(i, "status")
                 hScore[i] = self.calculateHomogenityScore()
                 print(hScore[i])
                 self.timeStep(self.N, self.p)
@@ -175,22 +176,24 @@ class Grid(object):
         if n == 0:
             return total
         return total/n
+        
 
-   """
-    def evaluateNeighborhoodLeaving(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.25*house.getStatusOfHousehold() or neighborhoodIncome < 0.75*house.getStatusOfHousehold() ):
-            return True
-        else:
-            return False
+  
+  
+    #def evaluateNeighborhoodLeaving(self, neighborhoodIncome, house):
+    #    if(neighborhoodIncome > 1.25*house.getStatusOfHousehold() or neighborhoodIncome < 0.75*house.getStatusOfHousehold() ):
+    #        return True
+    #    else:
+    #        return False
 
 
-    def evaluateNeighborhoodSearching(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.2*house.getStatusOfHousehold() or neighborhoodIncome < 0.8*house.getStatusOfHousehold() ):
-            return False
-        else:
-            return True
+    #def evaluateNeighborhoodSearching(self, neighborhoodIncome, house):
+    #    if(neighborhoodIncome > 1.2*house.getStatusOfHousehold() or neighborhoodIncome < 0.8*house.getStatusOfHousehold() ):
+    #        return False
+    #    else:
+    #        return True
 
-    """ 
+     
      
     def closestEmptyHouse(self, emptyHouses, i, j):
 
@@ -203,22 +206,22 @@ class Grid(object):
         return [x for _,x in sorted(zip(distances, emptyHouses))]
         
     
-    def leave(self, i, j):
+    def leave(self, i, j, x):
         '''        
         Family at place i,j leaves his house and goes to the closest avaiblable house that he likes.
         '''
         emptyHouses = self.getEmptyHouses()
         emptySorted = self.sortByEuclidean(emptyHouses,i,j)       
-        
+        status = self.grid[i][j].getStatusOfHousehold()
         moved = 0
     
         for q in range(len(emptySorted)-1):
             newI, newJ = emptySorted[q]
          
             neighbors = self.getNeighbors(newI, newJ)
-            neighborhoodIncome = self.averageIncomeNeighborhood(neighbors) 
-
-            if (self.evaluateNeighborhoodSearching(neighborhoodIncome,self.grid[i][j])):
+            total,difference = self.evaluateNeighbours(neighbors,status) 
+            
+            if (difference/total < x):
                 self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
                 self.grid[i][j].setFamily(None)
                 moved = 1
@@ -242,9 +245,10 @@ class Grid(object):
         total,difference = self.evaluateNeighbours(neighbors,self.grid[i][j].getStatusOfHousehold()) 
         #if self.evaluateNeighborhoodLeaving(neighborhood, neighbors, self.grid[i][j]):
         #    self.leave(i,j)
-        p = math.exp()
-        if self.evaluateNeighborhoodLeaving(neighborhoodIncome, self.grid[i][j]):
-            self.leave(i,j)
+        x = difference/total
+        p = math.exp(x)/(math.exp(x)+1)
+        if (np.random.randint(1,1/p + 1)==1):
+            self.leave(i,j,x)
      
     def evaluateNeighbours(self,neighbors,status):
         total = 0
@@ -252,7 +256,9 @@ class Grid(object):
         for i in range(len(neighbors)-1):
             if not neighbors[i].isEmpty():
                 total += 4
-                difference += Math.abs(neighbors[i].getStatusOfHousehold()-status)
+                difference += abs(neighbors[i].getStatusOfHousehold()-status)
+        if total == 0:
+            return 1,0
         return total,difference
      
     
@@ -304,7 +310,7 @@ class Grid(object):
                 
         
         
-grid = Grid(25, 0.2)
+grid = Grid(25, 0.4)
 grid(25,True, True)
 #grid.peopleLoseJob(0.3)
 grid(25,True,True)
