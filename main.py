@@ -12,13 +12,12 @@ NUMBERSOFTRYS = 5  #Number of times before a family moves even if there is no ho
 
 class Family(object):
     
-    def __init__(self, income, npeople):
-        self.income = income
-        self.npeople = npeople
+    def __init__(self, s_e_status):
+        self.s_e_status = s_e_status
         self.nrTries = 0
         
-    def getIncome(self):
-        return self.income
+    def getStatus(self):
+        return self.s_e_status
     
     def getTries(self):
         return self.nrTries
@@ -29,8 +28,8 @@ class Family(object):
     def resetTries(self):
         self.nrTries = 0
         
-    def setIncome(self,income):
-        self.income = income
+    def setStatus(self,s_e_status):
+        self.s_e_status = s_e_status
         
         
 class House(object):
@@ -49,11 +48,11 @@ class House(object):
         else:
             return False
         
-    def getIncomeOfHousehold(self):
+    def getStatusOfHousehold(self):
         if self.family is None:
             return 0
         else:
-            return self.family.getIncome()
+            return self.family.getStatus()
         
     def setFamily(self, fam):
         self.family = fam
@@ -97,14 +96,20 @@ class Grid(object):
         
     def fillGrid(self, N):
         "Fill the grid with Households for now only 3 different households exists for test purposes"
-        gridint = np.random.randint(0,3,(N,N))
+        gridint = np.random.randint(0,6,(N,N))
         grid = np.empty((N,N),dtype=object)
         for i in range(N):
             for j in range(N):
                 if gridint[i][j] == 1:
-                    grid[i][j] = House(200,Family(20,1))
+                    grid[i][j] = House(150,Family(1))
                 elif gridint[i][j] == 2:
-                    grid[i][j] = House(500,Family(100,1))
+                    grid[i][j] = House(200,Family(2))
+                elif gridint[i][j] == 3:
+                    grid[i][j] = House(300,Family(3))
+                elif gridint[i][j] == 4:
+                    grid[i][j] = House(400,Family(4))
+                elif gridint[i][j] == 5:
+                    grid[i][j] = House(500,Family(5))
                 else:
                     grid[i][j] = House(250, None)
         return grid
@@ -165,26 +170,27 @@ class Grid(object):
         for i in range(len(neighbors)-1):
             if not neighbors[i].isEmpty():
                 n += 1
-                total += neighbors[i].getIncomeOfHousehold()
+                total += neighbors[i].getStatusOfHousehold()
         if n == 0:
             return total
         return total/n
 
-
+   """
     def evaluateNeighborhoodLeaving(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.25*house.getIncomeOfHousehold() or neighborhoodIncome < 0.75*house.getIncomeOfHousehold() ):
+        if(neighborhoodIncome > 1.25*house.getStatusOfHousehold() or neighborhoodIncome < 0.75*house.getStatusOfHousehold() ):
             return True
         else:
             return False
 
 
     def evaluateNeighborhoodSearching(self, neighborhoodIncome, house):
-        if(neighborhoodIncome > 1.2*house.getIncomeOfHousehold() or neighborhoodIncome < 0.8*house.getIncomeOfHousehold() ):
+        if(neighborhoodIncome > 1.2*house.getStatusOfHousehold() or neighborhoodIncome < 0.8*house.getStatusOfHousehold() ):
             return False
         else:
             return True
 
-         
+    """ 
+     
     def closestEmptyHouse(self, emptyHouses, i, j):
 
         return emptyHouses[np.argmin(euclidean_distances(emptyHouses, (i,j)))]
@@ -232,12 +238,22 @@ class Grid(object):
         neighborhoodIncome = average income of neighbors
         """ 
         neighbors = self.getNeighbors(i, j)
-        neighborhoodIncome = self.averageIncomeNeighborhood(neighbors) 
+        total,difference = self.evaluateNeighbours(neighbors,self.grid[i][j].getStatusOfHousehold()) 
         #if self.evaluateNeighborhoodLeaving(neighborhood, neighbors, self.grid[i][j]):
         #    self.leave(i,j)
+        p = math.exp()
         if self.evaluateNeighborhoodLeaving(neighborhoodIncome, self.grid[i][j]):
             self.leave(i,j)
-         
+     
+    def evaluateNeighbours(self,neighbors,status):
+        total = 0
+        difference = 0
+        for i in range(len(neighbors)-1):
+            if not neighbors[i].isEmpty():
+                total += 4
+                difference += Math.abs(neighbors[i].getStatusOfHousehold()-status)
+        return total,difference
+     
     
     def calculateHomogenityScore(self):
         """
@@ -249,7 +265,7 @@ class Grid(object):
         for i in range(self.N):
             for j in range(self.N):
                 for neighbor in self.getNeighbors(i,j): 
-                    totalScore += 1/(np.abs(self.grid[i][j].getIncomeOfHousehold()-neighbor.getIncomeOfHousehold())+1)
+                    totalScore += 1/(np.abs(self.grid[i][j].getStatusOfHousehold()-neighbor.getStatusOfHousehold())+1)
         return totalScore
         
      
@@ -264,7 +280,7 @@ class Grid(object):
         if(attribute.lower() == "income"):
             for i in range(self.N):
                 for j in range(self.N):
-                    attributeGrid[i][j] = self.grid[i][j].getIncomeOfHousehold()
+                    attributeGrid[i][j] = self.grid[i][j].getStatusOfHousehold()
                         
         
         # cmap = colors.ListedColormap(['white', 'blue', 'red'])
@@ -281,7 +297,7 @@ class Grid(object):
         for i in range(self.N):
             for j in range(self.N):
                 if(np.random.randint(1,1/p + 1)==1) and not self.grid[i][j].isEmpty():
-                    self.grid[i][j].getFam().setIncome(self.grid[i][j].getFam().getIncome()*0.5)
+                    self.grid[i][j].getFam().setIncome(self.grid[i][j].getFam().getStatus()*0.5)
                     
                     
                 
@@ -289,7 +305,7 @@ class Grid(object):
         
 grid = Grid(25, 0.2)
 grid(25,True, True)
-grid.peopleLoseJob(0.3)
+#grid.peopleLoseJob(0.3)
 grid(25,True,True)
 
 
