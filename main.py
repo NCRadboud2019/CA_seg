@@ -97,7 +97,7 @@ class Grid(object):
         #plt.plot(np.arange(rounds),hScore)
         
     def fillGrid(self, N):
-        "Fill the grid with Households for now only 3 different households exists for test purposes"
+        "Fill the grid with Households"
         gridint = np.random.randint(0,6,(N,N))
         grid = np.empty((N,N),dtype=object)
         for i in range(N):
@@ -177,23 +177,6 @@ class Grid(object):
             return total
         return total/n
         
-
-  
-  
-    #def evaluateNeighborhoodLeaving(self, neighborhoodIncome, house):
-    #    if(neighborhoodIncome > 1.25*house.getStatusOfHousehold() or neighborhoodIncome < 0.75*house.getStatusOfHousehold() ):
-    #        return True
-    #    else:
-    #        return False
-
-
-    #def evaluateNeighborhoodSearching(self, neighborhoodIncome, house):
-    #    if(neighborhoodIncome > 1.2*house.getStatusOfHousehold() or neighborhoodIncome < 0.8*house.getStatusOfHousehold() ):
-    #        return False
-    #    else:
-    #        return True
-
-     
      
     def closestEmptyHouse(self, emptyHouses, i, j):
 
@@ -239,7 +222,7 @@ class Grid(object):
     def update(self, i, j):
         """
         neighbors = i,j places of the neighbors
-        neighborhoodIncome = average income of neighbors
+        Checks if a family wants to leave based on sigmoid function
         """ 
         neighbors = self.getNeighbors(i, j)
         total,difference = self.evaluateNeighbours(neighbors,self.grid[i][j].getStatusOfHousehold()) 
@@ -251,6 +234,9 @@ class Grid(object):
             self.leave(i,j,x)
      
     def evaluateNeighbours(self,neighbors,status):
+        """
+        returns the total possible difference in social economic status in the neighberhood and the actual difference
+        """
         total = 0
         difference = 0
         for i in range(len(neighbors)-1):
@@ -300,19 +286,11 @@ class Grid(object):
         # plt.savefig(str(rounds) + ".png", dpi = 300)
         plt.pause(0.05)
     
-    def peopleLoseJob(self, p):
-        for i in range(self.N):
-            for j in range(self.N):
-                if(np.random.randint(1,1/p + 1)==1) and not self.grid[i][j].isEmpty():
-                    self.grid[i][j].getFam().setIncome(self.grid[i][j].getFam().getStatus()*0.5)
+                   
                     
-                    
-                
-        
         
 grid = Grid(25, 0.4)
 grid(25,True, True)
-#grid.peopleLoseJob(0.3)
 grid(25,True,True)
 
 
