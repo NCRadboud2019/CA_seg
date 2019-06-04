@@ -82,7 +82,7 @@ class Grid(object):
         hScore = np.empty(rounds)
         if Print:        
             for i in range(rounds):
-                self.plot_matrix(i, "status")
+                self.plot_matrix(i, "social_economic_status")
                 hScore[i] = self.calculateHomogenityScore()
                 print(hScore[i])
                 self.timeStep(self.N, self.p)
@@ -93,7 +93,7 @@ class Grid(object):
                 print("Round {}: {}".format(i,hScore[i]))
                 self.timeStep(self.N, self.p)
             
-        self.plot_matrix(i, "income")    
+        self.plot_matrix(i, "social_economic_status")    
         #plt.plot(np.arange(rounds),hScore)
         
     def fillGrid(self, N):
@@ -158,7 +158,7 @@ class Grid(object):
         '''
         for i in np.random.permutation(np.arange(N)):
             for j in np.random.permutation(np.arange(N)):
-                if(np.random.randint(1,1/p + 1)==1) and not self.grid[i][j].isEmpty():
+                if(np.random.rand()<=p) and not self.grid[i][j].isEmpty():
                     self.update(i, j)
                     
 
@@ -228,10 +228,11 @@ class Grid(object):
         total,difference = self.evaluateNeighbours(neighbors,self.grid[i][j].getStatusOfHousehold()) 
         #if self.evaluateNeighborhoodLeaving(neighborhood, neighbors, self.grid[i][j]):
         #    self.leave(i,j)
-        x = difference/total
-        p = math.exp(x)/(math.exp(x)+1)
-        if (np.random.randint(1,1/p + 1)==1):
-            self.leave(i,j,x)
+        p = difference/total
+        
+        
+        if (np.random.rand()<=p):
+            self.leave(i,j,p)
      
     def evaluateNeighbours(self,neighbors,status):
         """
@@ -270,7 +271,7 @@ class Grid(object):
         
         attributeGrid = np.zeros((self.N, self.N))
         # moet mooier
-        if(attribute.lower() == "income"):
+        if(attribute.lower() == "social_economic_status"):
             for i in range(self.N):
                 for j in range(self.N):
                     attributeGrid[i][j] = self.grid[i][j].getStatusOfHousehold()
@@ -299,15 +300,19 @@ class Grid(object):
                              
                 heatMap.append(ShannonIndex(neighborhood))
                 
-                
-        plt.imshow(np.asarray(heatMap).resize(self.N, self.N))
+ 
+        plt.imshow(np.array(heatMap).reshape((self.N, self.N)))
+        plt.colorbar()        
+        plt.title("Heatmap of entropy")
         plt.show()
     
                     
     
-grid = Grid(20, 0.4)
-grid(2,False, True) #14057.533333333662
+grid = Grid(50, 0.3)
+grid(200, False, True) 
+input("Press Enter to continue...")
 grid.createHeatMap()
+#IETS GEBEUREN 
 #grid(25,False,True)
 
 
