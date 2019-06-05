@@ -60,6 +60,18 @@ class House(object):
         self.family = fam
         if not(fam is None):
             self.family.resetTries()
+            
+    def raiseStatus(self):
+        if not self.isEmpty():
+            status = self.family.getStatus()
+            if(status<5):
+                self.family.setStatus(status+1)
+            
+    def lowerStatus(self):
+        if not self.isEmpty():
+            status = self.family.getStatus()
+            if(status>1):
+                self.family.setStatus(status-1)
         
     def getFam(self):
         return self.family
@@ -189,6 +201,7 @@ class Grid(object):
         return [x for _,x in sorted(zip(distances, emptyHouses))]
         
     
+    
     def leave(self, i, j, x):
         '''        
         Family at place i,j leaves his house and goes to the closest avaiblable house that he likes.
@@ -198,8 +211,8 @@ class Grid(object):
         status = self.grid[i][j].getStatusOfHousehold()
         moved = 0
     
-        for q in range(len(emptySorted)-1):
-            newI, newJ = emptySorted[q]
+        for emptyHouse in range(len(emptySorted)-1):
+            newI, newJ = emptySorted[emptyHouse]
          
             neighbors = self.getNeighbors(newI, newJ)
             total,difference = self.evaluateNeighbours(neighbors,status) 
@@ -248,6 +261,35 @@ class Grid(object):
             return 1,0
         return total,difference
      
+    def burglary(self, i, j):
+        '''
+        Burglary in house at location i,j. The resident moves to furthest free house.
+        Neighbors decrease in social economic status by -1.
+        '''
+        neighbors = self.getNeighbors(i,j)
+        for neighbor in neighbors:
+            neighbor.lowerStatus()
+        emptyHouses = self.getEmptyHouses()
+        emptySorted = self.sortByEuclidean(emptyHouses,i,j)  
+    
+        newI, newJ = emptySorted[len(emptySorted)-1]   #Maybe house furthest away from own house? so len(emptysortd - 1) or just closest?
+        self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
+        self.grid[i][j].setFamily(None)     
+    
+    
+    def promotion(self, i,j):
+        self.grid[i][j].raiseStatus()
+
+
+    def goGreen(self, i,j):
+        '''
+        Goverment 'Go green!' policy on a Moore neighborhood. All residents have
+        their status increased by 1.
+        '''
+        neighbors = self.getNeighbors(i,j)
+        self.grid[i][j].raiseStatus()
+        for neighbor in neighbors:
+            neighbor.raiseStatus()
     
     def calculateHomogenityScore(self):
         """
@@ -282,6 +324,7 @@ class Grid(object):
         plt.title(attribute +" at round: " + str(rounds))
         plt.imshow(attributeGrid, interpolation='nearest')
         plt.tight_layout()
+        plt.colorbar()  
         plt.draw()
         plt.show()
         # plt.savefig(str(rounds) + ".png", dpi = 300)
@@ -308,10 +351,12 @@ class Grid(object):
     
                     
     
-grid = Grid(50, 0.3)
-grid(200, False, True) 
-input("Press Enter to continue...")
-grid.createHeatMap()
+grid = Grid(10, 0.3)
+grid(5, False, True) 
+grid.goGreen(0,0)
+grid(1, False, True) 
+#input("Press Enter to continue...")
+#grid.createHeatMap()
 #IETS GEBEUREN 
 #grid(25,False,True)
 
