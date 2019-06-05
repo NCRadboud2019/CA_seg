@@ -324,7 +324,6 @@ class Grid(object):
         plt.title(attribute +" at round: " + str(rounds))
         plt.imshow(attributeGrid, interpolation='nearest')
         plt.tight_layout()
-        plt.colorbar()  
         plt.draw()
         plt.show()
         # plt.savefig(str(rounds) + ".png", dpi = 300)
@@ -351,10 +350,10 @@ class Grid(object):
     
                     
     
-grid = Grid(10, 0.3)
-grid(5, False, True) 
-grid.goGreen(0,0)
-grid(1, False, True) 
+grid = Grid(30, 0.3)
+grid(50, True, True) 
+grid.goGreen(13,13)
+grid(50, True, True) 
 #input("Press Enter to continue...")
 #grid.createHeatMap()
 #IETS GEBEUREN 
