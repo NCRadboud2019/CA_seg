@@ -11,6 +11,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 "ALL NUMBERS HAVE TO BE MULTIPLIED BY 100 to get it to 'real'numbers"
 
 NUMBERSOFTRYS = 5  #Number of times before a family moves even if there is no house that they like
+TOTAL_ENTROPY = []
 
 class Family(object):
     
@@ -300,8 +301,15 @@ class Grid(object):
         totalScore = 0
         for i in range(self.N):
             for j in range(self.N):
-                for neighbor in self.getNeighbors(i,j): 
-                    totalScore += 1/(np.abs(self.grid[i][j].getStatusOfHousehold()-neighbor.getStatusOfHousehold())+1)
+                neighbors = self.getNeighbors(i,j)
+                neighborhood = []
+                for neighbor in neighbors:
+                    neighborhood.append(neighbor.getStatusOfHousehold())
+                
+                totalScore += ShannonIndex(neighborhood)
+                #totalScore += 1/(np.abs(self.grid[i][j].getStatusOfHousehold()-neighbor.getStatusOfHousehold())+1)
+         
+        TOTAL_ENTROPY.append(totalScore) 
         return totalScore
         
      
@@ -347,14 +355,29 @@ class Grid(object):
         plt.colorbar()        
         plt.title("Heatmap of entropy")
         plt.show()
+        
+    def plotTotalEntropy(self):
+        plt.xlabel('Steps')
+        plt.ylabel('Total Entropy')
+        plt.plot(TOTAL_ENTROPY)
+        plt.show()
+        
     
                     
     
-grid = Grid(30, 0.3)
-grid(50, True, True) 
+grid = Grid(20, 0.3)
+grid(25, False, True) 
 grid.goGreen(13,13)
-grid(50, True, True) 
-#input("Press Enter to continue...")
+grid.goGreen(2,2)
+grid.goGreen(18,18)
+grid.goGreen(13,4)
+grid.goGreen(5,18)
+grid.goGreen(1,19)
+grid(25, False, True) 
+input("Press Enter to continue...")
+grid.plotTotalEntropy()
+
+
 #grid.createHeatMap()
 #IETS GEBEUREN 
 #grid(25,False,True)
