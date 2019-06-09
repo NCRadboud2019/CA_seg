@@ -106,7 +106,7 @@ class Grid(object):
                 print("Round {}: {}".format(i,hScore[i]))
                 self.timeStep(self.N, self.p)
             
-        self.plot_matrix(i, "social_economic_status")    
+        #self.plot_matrix(i, "social_economic_status")    
         #plt.plot(np.arange(rounds),hScore)
         
     def fillGrid(self, N):
@@ -169,10 +169,12 @@ class Grid(object):
         '''        
         For each cell, there is a chance p that this cell get's updated.
         '''
-        for i in np.random.permutation(np.arange(N)):
-            for j in np.random.permutation(np.arange(N)):
-                if(np.random.rand()<=p) and not self.grid[i][j].isEmpty():
-                    self.update(i, j)
+        for _ in range(N*N):
+          
+            i = np.random.randint(0,self.N)
+            j = np.random.randint(0,self.N)
+            if(np.random.rand()<=p) and not self.grid[i][j].isEmpty():
+                self.update(i, j)
                     
 
     #def getNeighborhood(self, neighbors):
@@ -366,20 +368,25 @@ class Grid(object):
                     
     
 grid = Grid(20, 0.3)
-grid(25, False, True) 
+grid(100, False, True) 
+
 grid.goGreen(13,13)
 grid.goGreen(2,2)
 grid.goGreen(18,18)
 grid.goGreen(13,4)
 grid.goGreen(5,18)
 grid.goGreen(1,19)
+grid.plotTotalEntropy()
+
+'''
 grid(25, False, True) 
 input("Press Enter to continue...")
 grid.plotTotalEntropy()
 
 
-#grid.createHeatMap()
+grid.createHeatMap()
 #IETS GEBEUREN 
 #grid(25,False,True)
 
 
+'''
