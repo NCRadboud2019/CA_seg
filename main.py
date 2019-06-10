@@ -106,7 +106,7 @@ class Grid(object):
                 print("Round {}: {}".format(i,hScore[i]))
                 self.timeStep(self.N, self.p)
             
-        #self.plot_matrix(i, "social_economic_status")    
+        self.plot_matrix(i, "social_economic_status")    
         #plt.plot(np.arange(rounds),hScore)
         
     def fillGrid(self, N):
@@ -266,7 +266,7 @@ class Grid(object):
         return total,difference
      
         
-    def getCostOfNeighbour(diff):
+    def getCostOfNeighbour(self,diff):
         if diff == 1:
             return 1
         elif diff == 2:
@@ -275,6 +275,8 @@ class Grid(object):
             return 3
         elif diff == 4:
             return 4
+        else:
+            return 0
     
     def burglary(self, i, j):
         '''
@@ -379,8 +381,8 @@ class Grid(object):
     
                     
     
-grid = Grid(20, 0.3)
-grid(100, False, True) 
+grid = Grid(25, 0.3)
+grid(100, True, True) 
 
 grid.goGreen(13,13)
 grid.goGreen(2,2)
@@ -388,7 +390,7 @@ grid.goGreen(18,18)
 grid.goGreen(13,4)
 grid.goGreen(5,18)
 grid.goGreen(1,19)
-grid.plotTotalEntropy()
+#grid.plotTotalEntropy()
 
 '''
 grid(25, False, True) 
