@@ -379,17 +379,33 @@ class Grid(object):
         plt.show()
         
     
-                    
+'''
+Defaults:
+Grid Size = 25
+Categories = 5
+Probability = 0.3
+#Epochs = 150
+Costs = 1:1 2:2 3:3 4:4
+'''                   
     
 grid = Grid(25, 0.3)
-grid(100, True, True) 
+grid(150, False, True) 
 
-grid.goGreen(13,13)
-grid.goGreen(2,2)
-grid.goGreen(18,18)
-grid.goGreen(13,4)
-grid.goGreen(5,18)
-grid.goGreen(1,19)
+input("Press Enter to continue...")
+plt.clf()
+grid.plotTotalEntropy()
+input("Press Enter to continue...")
+plt.clf()
+input("Press Enter to continue...")
+grid.createHeatMap()
+
+
+#grid.goGreen(13,13)
+#grid.goGreen(2,2)
+#grid.goGreen(18,18)
+#grid.goGreen(13,4)
+#grid.goGreen(5,18)
+#grid.goGreen(1,19)
 #grid.plotTotalEntropy()
 
 '''
