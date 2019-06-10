@@ -259,11 +259,23 @@ class Grid(object):
         for i in range(len(neighbors)-1):
             if not neighbors[i].isEmpty():
                 total += 4
-                difference += abs(neighbors[i].getStatusOfHousehold()-status)
+                diff = abs(neighbors[i].getStatusOfHousehold()-status) 
+                difference += self.getCostOfNeighbour(diff)
         if total == 0:
             return 1,0
         return total,difference
      
+        
+    def getCostOfNeighbour(diff):
+        if diff == 1:
+            return 1
+        elif diff == 2:
+           return 2
+        elif diff == 3:
+            return 3
+        elif diff == 4:
+            return 4
+    
     def burglary(self, i, j):
         '''
         Burglary in house at location i,j. The resident moves to furthest free house.
