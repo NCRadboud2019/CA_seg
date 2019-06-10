@@ -401,17 +401,17 @@ Costs = 1:1 2:2 3:3 4:4
 '''      
 
 plt.clf()
-grid = Grid(25, 0.3,10)
+grid = Grid(75, 0.3, 5)
 grid(150, False, True) 
-plt.savefig('exp2_6_Grid.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp3_4_Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp2_6_Entropy.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp3_4_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp2_6_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp3_4_Heatmap.png', dpi=600, bbox_inches='tight')
 plt.clf()
 
 #grid.goGreen(13,13)
