@@ -112,8 +112,11 @@ class Grid(object):
     def fillGrid(self, N,nrFam):
         "Fill the grid with Households"
         self.nrFam = nrFam
-        gridint = np.random.randint(0,nrFam+1,(N,N))
+        
+        gridint = np.random.randint(1,nrFam+1,(N,N))
         grid = np.empty((N,N),dtype=object)
+        FreeHouses = (round) ((1/6)*N*N)
+                     
         for i in range(N):
             for j in range(N):
                 if gridint[i][j] == 1:
@@ -126,8 +129,12 @@ class Grid(object):
                     grid[i][j] = House(400,Family(4))
                 elif gridint[i][j] == 5:
                     grid[i][j] = House(500,Family(5))
-                else:
-                    grid[i][j] = House(250, None)
+        
+        for z in range(FreeHouses):
+            i = np.random.randint(0,N,FreeHouses)
+            j = np.random.randint(0,N,FreeHouses)
+            grid[i[z]][j[z]] = House(200,None)
+            
         return grid
         
         
@@ -401,7 +408,7 @@ Costs = 1:1 2:2 3:3 4:4
 '''      
 
 plt.clf()
-grid = Grid(100, 0.3, 10)
+grid = Grid(25, 0.3, 5)
 grid(150, False, True) 
 plt.savefig('exp6_3_Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
