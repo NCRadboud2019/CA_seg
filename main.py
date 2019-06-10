@@ -129,6 +129,16 @@ class Grid(object):
                     grid[i][j] = House(400,Family(4))
                 elif gridint[i][j] == 5:
                     grid[i][j] = House(500,Family(5))
+                elif gridint[i][j] == 6:
+                    grid[i][j] = House(500,Family(6))
+                elif gridint[i][j] == 7:
+                    grid[i][j] = House(500,Family(7))
+                elif gridint[i][j] == 8:
+                    grid[i][j] = House(500,Family(8))
+                elif gridint[i][j] == 9:
+                    grid[i][j] = House(500,Family(9))
+                elif gridint[i][j] == 10:
+                    grid[i][j] = House(500,Family(10))
         
         for z in range(FreeHouses):
             i = np.random.randint(0,N,FreeHouses)
@@ -408,17 +418,17 @@ Costs = 1:1 2:2 3:3 4:4
 '''      
 
 plt.clf()
-grid = Grid(25, 0.3, 5)
+grid = Grid(25, 0.3, 10)
 grid(150, False, True) 
-plt.savefig('exp6_3_Grid.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp2_6_Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp6_3_Entropy.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp2_6_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp6_3_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp2_6_Heatmap.png', dpi=600, bbox_inches='tight')
 plt.clf()
 
 #grid.goGreen(13,13)
