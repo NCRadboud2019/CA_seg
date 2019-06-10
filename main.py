@@ -389,18 +389,18 @@ Probability = 0.3
 Costs = 1:1 2:2 3:3 4:4
 '''      
 
-    
+plt.clf()
 grid = Grid(25, 0.3)
 grid(150, False, True) 
-plt.savefig('exp1_6_Grid.png', dpi=600)
+plt.savefig('exp1_6_Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp1_6_Entropy.png', dpi=600)
+plt.savefig('exp1_6_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp1_6_Heatmap', dpi=600)
+plt.savefig('exp1_6_Heatmap', dpi=600, bbox_inches='tight')
 plt.clf()
 
 #grid.goGreen(13,13)
