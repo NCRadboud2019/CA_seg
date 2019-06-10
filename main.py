@@ -274,7 +274,7 @@ class Grid(object):
         elif diff == 3:
             return 3
         elif diff == 4:
-            return 4
+            return 100
         else:
             return 0
     
@@ -345,12 +345,12 @@ class Grid(object):
         
         # cmap = colors.ListedColormap(['white', 'blue', 'red'])
         plt.legend()
-        plt.title(attribute +" at round: " + str(rounds))
+        #plt.title(attribute +" at round: " + str(rounds))
         plt.imshow(attributeGrid, interpolation='nearest')
         plt.tight_layout()
         plt.draw()
         plt.show()
-        # plt.savefig(str(rounds) + ".png", dpi = 300)
+        
         plt.pause(0.05)
     
                
@@ -375,6 +375,7 @@ class Grid(object):
     def plotTotalEntropy(self):
         plt.xlabel('Steps')
         plt.ylabel('Total Entropy')
+        plt.title("Total Entropy over time")
         plt.plot(TOTAL_ENTROPY)
         plt.show()
         
@@ -386,19 +387,21 @@ Categories = 5
 Probability = 0.3
 #Epochs = 150
 Costs = 1:1 2:2 3:3 4:4
-'''                   
+'''      
+
     
 grid = Grid(25, 0.3)
 grid(150, False, True) 
-
+plt.savefig('exp1_6_Grid.png', dpi=600)
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
+plt.savefig('exp1_6_Entropy.png', dpi=600)
 input("Press Enter to continue...")
 plt.clf()
-input("Press Enter to continue...")
 grid.createHeatMap()
-
+plt.savefig('exp1_6_Heatmap', dpi=600)
+plt.clf()
 
 #grid.goGreen(13,13)
 #grid.goGreen(2,2)
@@ -407,6 +410,7 @@ grid.createHeatMap()
 #grid.goGreen(5,18)
 #grid.goGreen(1,19)
 #grid.plotTotalEntropy()
+
 
 '''
 grid(25, False, True) 
