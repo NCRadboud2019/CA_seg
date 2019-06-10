@@ -81,12 +81,12 @@ class House(object):
         
 class Grid(object):
       
-    def __init__(self, N, p):
+    def __init__(self, N, p, nrFam):
         """
         N grid size (NxN)
         p chance that a family wants to move
         """
-        self.grid = self.fillGrid(N)
+        self.grid = self.fillGrid(N,nrFam)
         self.N = N
         self.p = p
         
@@ -109,9 +109,10 @@ class Grid(object):
         self.plot_matrix(i, "social_economic_status")    
         #plt.plot(np.arange(rounds),hScore)
         
-    def fillGrid(self, N):
+    def fillGrid(self, N,nrFam):
         "Fill the grid with Households"
-        gridint = np.random.randint(0,6,(N,N))
+        self.nrFam = nrFam
+        gridint = np.random.randint(0,nrFam+1,(N,N))
         grid = np.empty((N,N),dtype=object)
         for i in range(N):
             for j in range(N):
@@ -258,7 +259,7 @@ class Grid(object):
         difference = 0
         for i in range(len(neighbors)-1):
             if not neighbors[i].isEmpty():
-                total += 4
+                total += self.nrFam-1
                 diff = abs(neighbors[i].getStatusOfHousehold()-status) 
                 difference += self.getCostOfNeighbour(diff)
         if total == 0:
@@ -274,7 +275,17 @@ class Grid(object):
         elif diff == 3:
             return 3
         elif diff == 4:
-            return 100
+            return 4
+        elif diff == 5:
+            return 5
+        elif diff == 6:
+            return 6
+        elif diff == 7:
+            return 7
+        elif diff == 8:
+            return 8
+        elif diff == 9:
+            return 9
         else:
             return 0
     
@@ -390,17 +401,17 @@ Costs = 1:1 2:2 3:3 4:4
 '''      
 
 plt.clf()
-grid = Grid(25, 0.3)
+grid = Grid(25, 0.3,10)
 grid(150, False, True) 
-plt.savefig('exp1_6_Grid.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp2_6_Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp1_6_Entropy.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp2_6_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp1_6_Heatmap', dpi=600, bbox_inches='tight')
+plt.savefig('exp2_6_Heatmap.png', dpi=600, bbox_inches='tight')
 plt.clf()
 
 #grid.goGreen(13,13)
