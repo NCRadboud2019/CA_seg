@@ -115,7 +115,7 @@ class Grid(object):
         
         gridint = np.random.randint(1,nrFam+1,(N,N))
         grid = np.empty((N,N),dtype=object)
-        FreeHouses = (round) ((1/2)*N*N)
+        FreeHouses = (round) ((1/6)*N*N)
           
         for i in range(N):
             for j in range(N):
@@ -419,7 +419,49 @@ Costs = 1:1 2:2 3:3 4:4
 
 plt.clf()
 grid = Grid(25, 0.3, 5)
-grid(150, False, True) 
+grid(100, False, True) 
+plt.savefig('exp8_2_100Grid.png', dpi=600, bbox_inches='tight')
+input("Press Enter to continue...")
+plt.clf()
+grid.plotTotalEntropy()
+plt.savefig('exp8_2_100_Entropy.png', dpi=600, bbox_inches='tight')
+input("Press Enter to continue...")
+plt.clf()
+grid.createHeatMap()
+plt.savefig('exp8_2_100_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.clf()
+
+grid(29, False, True) 
+grid.burglary(10,10)
+grid.burglary(13,13)
+grid.burglary(8,8)
+
+grid(1,False,True)
+plt.savefig('exp8_2_130Grid.png', dpi=600, bbox_inches='tight')
+input("Press Enter to continue...")
+plt.clf()
+grid.plotTotalEntropy()
+plt.savefig('exp8_2_130_Entropy.png', dpi=600, bbox_inches='tight')
+input("Press Enter to continue...")
+plt.clf()
+grid.createHeatMap()
+plt.savefig('exp8_2_130_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.clf()
+
+grid(20, False, True) 
+plt.savefig('exp8_2_150Grid.png', dpi=600, bbox_inches='tight')
+input("Press Enter to continue...")
+plt.clf()
+grid.plotTotalEntropy()
+plt.savefig('exp8_2_150_Entropy.png', dpi=600, bbox_inches='tight')
+input("Press Enter to continue...")
+plt.clf()
+grid.createHeatMap()
+plt.savefig('exp8_2_150_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.clf()
+
+
+'''
 plt.savefig('exp7_6_Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
@@ -438,7 +480,7 @@ plt.clf()
 #grid.goGreen(5,18)
 #grid.goGreen(1,19)
 #grid.plotTotalEntropy()
-
+'''
 
 '''
 grid(25, False, True) 
