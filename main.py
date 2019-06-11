@@ -115,7 +115,7 @@ class Grid(object):
         
         gridint = np.random.randint(1,nrFam+1,(N,N))
         grid = np.empty((N,N),dtype=object)
-        FreeHouses = (round) ((1/6)*N*N)
+        FreeHouses = (round) ((1/2)*N*N)
           
         for i in range(N):
             for j in range(N):
@@ -418,17 +418,17 @@ Costs = 1:1 2:2 3:3 4:4
 '''      
 
 plt.clf()
-grid = Grid(150, 0.3, 5)
+grid = Grid(25, 0.3, 5)
 grid(150, False, True) 
-plt.savefig('exp3_6_Grid.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp7_6_Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp3_6_Entropy.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp7_6_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp3_6_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp7_6_Heatmap.png', dpi=600, bbox_inches='tight')
 plt.clf()
 
 #grid.goGreen(13,13)
