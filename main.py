@@ -77,7 +77,11 @@ class House(object):
     def getFam(self):
         return self.family
     
-
+    def getValue(self):
+        return self.value
+    
+    def setValue(self,value):
+        self.value = value
         
 class Grid(object):
       
@@ -233,16 +237,17 @@ class Grid(object):
         moved = 0
     
         for emptyHouse in range(len(emptySorted)-1):
-            newI, newJ = emptySorted[emptyHouse]
-         
-            neighbors = self.getNeighbors(newI, newJ)
-            total,difference = self.evaluateNeighbours(neighbors,status) 
             
-            if (difference/total < x):
-                self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
-                self.grid[i][j].setFamily(None)
-                moved = 1
-                break
+            newI, newJ = emptySorted[emptyHouse]
+            if not (self.grid[i][j].getValue() == 0 and status>2):
+                neighbors = self.getNeighbors(newI, newJ)
+                total,difference = self.evaluateNeighbours(neighbors,status) 
+                
+                if (difference/total < x):
+                    self.grid[newI][newJ].setFamily(self.grid[i][j].getFam())
+                    self.grid[i][j].setFamily(None)
+                    moved = 1
+                    break
             
         if (moved == 0 and self.grid[i][j].getFam().getTries() == 5):
             newI, newJ = emptySorted[len(emptySorted)-1]   #Maybe house furthest away from own house? so len(emptysortd - 1) or just closest?
@@ -335,6 +340,18 @@ class Grid(object):
         self.grid[i][j].raiseStatus()
         for neighbor in neighbors:
             neighbor.raiseStatus()
+            
+    def socialRentingHousing(self,i,j):
+        newFams = np.random.randint(1,3,9)
+        shifts = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))   
+        self.grid[i][j].setValue(0)
+        self.grid[i][j].setFamily(Family(newFams[0]))
+        i = 1
+        for shift in shifts:
+            self.grid[i+shift[0]][j+shift[0]].setValue(0)
+            self.grid[i+shift[0]][j+shift[0]].setFamily(Family(newFams[i]))
+            i += 1
+            
     
     def calculateHomogenityScore(self):
         """
@@ -420,44 +437,44 @@ Costs = 1:1 2:2 3:3 4:4
 plt.clf()
 grid = Grid(25, 0.3, 5)
 grid(100, False, True) 
-plt.savefig('exp8_2_100Grid.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_100Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp8_2_100_Entropy.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_100_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp8_2_100_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_100_Heatmap.png', dpi=600, bbox_inches='tight')
 plt.clf()
 
 grid(29, False, True) 
-grid.burglary(10,10)
-grid.burglary(13,13)
-grid.burglary(8,8)
+grid.socialRentingHousing(13,13)
+grid.socialRentingHousing(18,18)
+grid.socialRentingHousing(5,5)
 
 grid(1,False,True)
-plt.savefig('exp8_2_130Grid.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_130Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp8_2_130_Entropy.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_130_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp8_2_130_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_130_Heatmap.png', dpi=600, bbox_inches='tight')
 plt.clf()
 
 grid(20, False, True) 
-plt.savefig('exp8_2_150Grid.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_150Grid.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.plotTotalEntropy()
-plt.savefig('exp8_2_150_Entropy.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_150_Entropy.png', dpi=600, bbox_inches='tight')
 input("Press Enter to continue...")
 plt.clf()
 grid.createHeatMap()
-plt.savefig('exp8_2_150_Heatmap.png', dpi=600, bbox_inches='tight')
+plt.savefig('exp10_2_150_Heatmap.png', dpi=600, bbox_inches='tight')
 plt.clf()
 
 
