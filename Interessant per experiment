@@ -1,0 +1,21 @@
+Experiment 1 - Varying costs :  When a difference of 2 is not punished there is no segregation, when 1 is not punished it takes longer to result in a segregated state. There is only small to no difference between equal, gradually or quadratic costs.
+
+Experiment 2 - varying categories: The more categories there are the more the higher the entropy in the heatmaps. This is due to more edges between small segregated neighborhoods. Furthermore when there are 10 classes there is no seggregation. Possibly due to the fact that the grid is to small to get clustered neighborhoods when there are 10 possible classes.
+
+Experiment 3 - varying gridsizes: Niet echt interessant vanaf gridsize 25 zie je eigenlijk geewoon zelfde patroon in veelvoud in hogere gridsizes
+
+Experiment 4 - varying probability: the lower the probability the longer it takes for segration to take place and longer it takes to reach steady state.
+
+Experiment 5 - varying epochs: More epochs more segregation epoch 200 is steady state
+
+Experiment 6.1 - varying grid size for 10 states: In the beginning the total entropy increases but after a certain point it starts to decline The bigger the grid the more it declines. But the heatmap of the end product sort of looks the same.
+
+Experiment 6.2 - varying epochs with grid size 75: No steady state is reached only difference is how well the segregation is seeable.
+
+Experiment 7 - varying amount of empyt houses:  Not interesting exept when half of the grid is empty there is little segregation but this is also due to the fact that there are less clusters because there are so many empty houses
+
+Experiment 8 - Influence of burglaries: After the burglaries there is a small increase in the entropy so decrease in segregation. Because But after 5-6 epochs the effect is gone. And segregation start to continue
+
+Experiment 9 - Influence of GoGreen: After gogreen there is an increase in segregation why?
+
+Experiment 10 - Social renting houses: This has the most effect of the three, there is big decrease in segregation but again this effects fades fast probably because the families moved there don't feel at home in the neighborhood and leave again to a neighberhood which they like better and the social renting houses become empty.
