@@ -311,9 +311,9 @@ class Grid(object):
         else:
             return 0
     
-    def burglary(self, i, j):
+    def houseFire(self, i, j):
         '''
-        Burglary in house at location i,j. The resident moves to furthest free house.
+        Fire in house at location i,j. The resident moves to furthest free house.
         Neighbors decrease in social economic status by -1.
         '''
         neighbors = self.getNeighbors(i,j)
